@@ -1,0 +1,20 @@
+{
+  "devDependencies": {
+    "standard": "^17.1.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "$": "readonly",
+      "jQuery": "readonly",
+      "Swal": "readonly",
+      "Toast": "readonly"
+    },
+    "extends": [
+      "standard"
+    ]
+  }
+}
