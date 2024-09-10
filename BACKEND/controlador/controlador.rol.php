@@ -3,138 +3,81 @@
 class ControladorRoles
 {
 
-  /*=============================================
-	CREAR ROLES
-	=============================================*/
-
-  static public function ctrCrearRol()
+  static public function ctrCrearRol($name)
   {
+    try {
+      if (preg_match('/^[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+$/', $name)) {
+        $table = ModeloRoles::TABLE;
+        $nameRole = strtoupper($name);
 
-    if (isset($_POST["nuevoRol"])) {
-
-      if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["nuevoRol"])) {
-
-        $tabla = "rol";
-
-        $datos = array("nomRol" => strtoupper($_POST["nuevoRol"]));
-
-        $respuesta = ModeloRoles::mdlIngresarRol($tabla, $datos);
-
-        if ($respuesta == "ok") {
-
-          echo '<script>
-
-					swal({
-						  type: "success",
-						  title: "El rol ha sido guardada correctamente",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-									if (result.value) {
-
-									window.location = "rol";
-
-									}
-								})
-
-					</script>';
+        $respuesta = ModeloRoles::mdlCrearRol($table, $nameRole);
+        if ($respuesta) {
+          return [
+            "status_code" => 200,
+            "status" => "success",
+            "message" => "Rol insertado correctamente"
+          ];
+        } else {
+          return [
+            "status_code" => 409,
+            "status" => "error",
+            "message" => "El rol ya existe en la base de datos"
+          ];
         }
       } else {
-
-        echo '<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El rol no puede ir vacía o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-							if (result.value) {
-
-							window.location = "rol";
-
-							}
-						})
-
-			  	</script>';
+        return [
+          "status_code" => 400,
+          "status" => "error",
+          "message" => "El nombre de rol no puede llevar caracteres especiales"
+        ];
       }
+    } catch (PDOException $e) {
+      return [
+        "status_code" => 500,
+        "status" => "error",
+        "message" => "Ocurrió un error al intentar crear el rol"
+      ];
     }
   }
 
-  /*=============================================
-	MOSTRAR CATEGORIAS
-	=============================================*/
-
-  static public function ctrMostrarRoles($item, $valor)
+  static public function ctrMostrarRoles()
   {
-
-    $tabla = "roles";
-    $respuesta = ModeloRoles::mdlMostrarRoles($tabla, $item, $valor);
+    $table = ModeloRoles::TABLE;
+    $respuesta = ModeloRoles::mdlMostrarRoles($table);
     return $respuesta;
   }
 
-  /*=============================================
-	EDITAR CATEGORIA
-	=============================================*/
-
-  static public function ctrEditarRol()
+  static public function ctrEditarRol($data)
   {
+    $table = ModeloRoles::TABLE;
+    $data = [
+      "name" => strtoupper($data['name']),
+      "id" => $data['id']
+    ];
 
-    if (isset($_POST["editarRol"])) {
+    $respuesta = ModeloRoles::mdlEditarRol($table, $data);
 
-      // var_dump($_POST["editarRol"]);
-
-      if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $_POST["editarRol"])) {
-
-        $tabla = "rol";
-
-        $datos = array(
-          "nomRol" => strtoupper($_POST["editarRol"]),
-          "idRol" => $_POST["idRol"]
-        );
-
-        $respuesta = ModeloRoles::mdlEditarRol($tabla, $datos);
-
-
-
-        if ($respuesta == "ok") {
-
-          echo '<script>
-
-					swal({
-						  type: "success",
-						  title: "El rol ha sido cambiada correctamente",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-									if (result.value) {
-
-									window.location = "rol";
-
-									}
-								})
-
-					</script>';
-        }
+    try {
+      if ($respuesta) {
+        return [
+          "status_code" => 200,
+          "status" => "success",
+          "message" => "Rol actualizado correctamente"
+        ];
       } else {
-
-        echo '<script>
-
-					swal({
-						  type: "error",
-						  title: "¡El rol no puede ir vacía o llevar caracteres especiales!",
-						  showConfirmButton: true,
-						  confirmButtonText: "Cerrar"
-						  }).then(function(result){
-							if (result.value) {
-
-							window.location = "rol";
-
-							}
-						})
-
-			  	</script>';
+        return [
+          "status_code" => 409,
+          "status" => "warning",
+          "message" => "No se realizó ningún cambio, el nombre ya existe"
+        ];
       }
+    } catch (Exception $e) {
+      return [
+        "status_code" => 500,
+        "status" => "error",
+        "message" => "Huvo un error interno del servidor",
+        "message_error" => $e->getMessage()
+      ];
     }
   }
 
@@ -142,57 +85,31 @@ class ControladorRoles
 	BORRAR CATEGORIA
 	=============================================*/
 
-  static public function ctrBorrarRol()
+  static public function ctrBorrarRol($id)
   {
+    if (empty($id) && !is_numeric($id)) {
+      return [
+        "status_code" => 400,
+        "status" => "error",
+        "message" => "El id del rol no existe"
+      ];
+    }
 
-    if (isset($_GET["idRol"])) {
+    $table = ModeloRoles::TABLE;
+    $respuesta = ModeloRoles::mdlBorrarRol($table, $id);
 
-      $respuesta = ModeloUsuarios::MdlMostrarUsuarios("usuario", "idRol", $_GET["idRol"]);
-
-      if (!$respuesta) {
-
-        $tabla = "rol";
-        $datos = $_GET["idRol"];
-
-        $respuesta = ModeloRoles::mdlBorrarRol($tabla, $datos);
-
-        if ($respuesta == "ok") {
-
-          echo '<script>
-
-						swal({
-							  type: "success",
-							  title: "El Rol ha sido borrada correctamente",
-							  showConfirmButton: true,
-							  confirmButtonText: "Cerrar"
-							  }).then(function(result){
-										if (result.value) {
-
-										window.location = "rol";
-
-										}
-									})
-
-						</script>';
-        }
-      } else {
-        echo '<script>
-
-						swal({
-							  type: "error",
-							  title: "No se puede eliminar el Rol",
-							  showConfirmButton: true,
-							  confirmButtonText: "Cerrar"
-							  }).then(function(result){
-										if (result.value) {
-
-										window.location = "rol";
-
-										}
-									})
-
-						</script>';
-      }
+    if ($respuesta) {
+      return [
+        "status_code" => 200,
+        "status" => "success",
+        "message" => "Rol actualizado correctamente"
+      ];
+    } else {
+      return [
+        "status_code" => 400,
+        "status" => "error",
+        "message" => "No se realizaron cambios"
+      ];
     }
   }
 }

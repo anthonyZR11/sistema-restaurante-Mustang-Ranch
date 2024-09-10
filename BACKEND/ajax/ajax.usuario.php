@@ -52,6 +52,16 @@ class AjaxUsuarios
     echo json_encode($respuesta);
   }
 
+
+  public function ajaxDeleteUser()
+  {
+    $item = 'id';
+    $valor = $this->idUsuario;
+
+    $respuesta = ControladorUsuarios::ctrEliminarUsuario($item, $valor);
+    echo json_encode($respuesta);
+  }
+
   public function ajaxActivarUsuario()
   {
     $data = [
@@ -92,11 +102,9 @@ switch ($ajaxUsuario->option) {
   case 'loadUsers':
     $ajaxUsuario->loadTableUser();
     break;
-
   case 'insertUser':
     $ajaxUsuario->ajaxAgregarUsuario();
     break;
-
   case 'updateUser':
     $ajaxUsuario->ajaxEditarUsuario();
     break;
@@ -105,5 +113,8 @@ switch ($ajaxUsuario->option) {
     break;
   case 'changeStatusUser':
     $ajaxUsuario->ajaxActivarUsuario();
+    break;
+  case 'deleteUser':
+    $ajaxUsuario->ajaxDeleteUser();
     break;
 }

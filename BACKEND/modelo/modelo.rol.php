@@ -4,94 +4,61 @@ require_once "conexion.php";
 
 class ModeloRoles
 {
+  const TABLE = 'roles';
 
-  /*=============================================
-	CREAR ROL
-	=============================================*/
-
-  static public function mdlIngresarRol($tabla, $datos)
+  static public function mdlCrearRol($table, $name)
   {
+    try {
+      $stmt = Conexion::conectar()->prepare("INSERT INTO $table (name) VALUES (:name)");
+      $stmt->bindParam(":name", $name, PDO::PARAM_STR);
 
-    $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomRol) VALUES (:nomRol)");
-
-    $stmt->bindParam(":nomRol", $datos["nomRol"], PDO::PARAM_STR);
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
+      $response = $stmt->execute();
+      $stmt = null;
+      return $response;
+    } catch (Exception $e) {
+      if ($e->getCode() == 23000) {
+        return false;
+      } else {
+        throw new Exception("Error en la base de datos: " . $e->getMessage(), 500);
+      }
     }
-
-    $stmt->close();
-    $stmt = null;
   }
 
-  /*=============================================
-	MOSTRAR ROL
-	=============================================*/
-
-  static public function mdlMostrarRoles($tabla, $item, $valor)
+  static public function mdlMostrarRoles($table)
   {
-
-    if ($item != null) {
-      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
-      $stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
-      $stmt->execute();
-      return $stmt->fetch();
-    } else {
-      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
-      $stmt->execute();
-      return $stmt->fetchAll();
-    }
+    $stmt = Conexion::conectar()->prepare("SELECT * FROM $table WHERE status = 1 ORDER BY id DESC");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /*=============================================
 	EDITAR CATEGORIA
 	=============================================*/
 
-  static public function mdlEditarRol($tabla, $datos)
+  static public function mdlEditarRol($table, $data)
   {
+    $stmt = Conexion::conectar()->prepare("UPDATE $table SET name = :name WHERE id = :id");
 
-    $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nomRol = :nomRol WHERE idRol = :idRol");
+    $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
+    $stmt->bindParam(":id", $data["id"], PDO::PARAM_INT);
+    $stmt->execute();
 
-    $stmt->bindParam(":nomRol", $datos["nomRol"], PDO::PARAM_STR);
-    $stmt->bindParam(":idRol", $datos["idRol"], PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
+    $response = $stmt->rowCount() > 0;
     $stmt = null;
+    return $response;
   }
 
   /*=============================================
 	BORRAR CATEGORIA
 	=============================================*/
 
-  static public function mdlBorrarRol($tabla, $datos)
+  static public function mdlBorrarRol($table, $id)
   {
-
-    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idRol = :idRol");
-
-    $stmt->bindParam(":idRol", $datos, PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
-
+    $stmt = Conexion::conectar()->prepare("UPDATE $table SET status = 0 WHERE id = :id");
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $response = $stmt->rowCount() > 0;
     $stmt = null;
+    return $response;
   }
 }

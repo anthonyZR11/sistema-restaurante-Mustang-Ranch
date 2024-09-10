@@ -74,7 +74,9 @@ class modeloUsuarios
       FROM $tabla AS u
       INNER JOIN roles AS r
       ON u.rol_id = r.id
-      WHERE u.$item = :$item";
+      WHERE u.$item = :$item
+      AND u.status <> 11
+      AND u.status IS NOT NULL";
 
     $stmt = Conexion::conectar()->prepare($query);
     $stmt->bindParam(":$item", $value, PDO::PARAM_STR);
@@ -97,7 +99,9 @@ class modeloUsuarios
         r.id AS role_id
       FROM $table AS u
       INNER JOIN roles AS r
-      ON u.rol_id = r.id";
+      ON u.rol_id = r.id
+      WHERE u.status <> 11
+      AND u.status IS NOT NULL";
 
     $stmt = Conexion::conectar()->prepare($query);
     $stmt->execute();
@@ -125,23 +129,29 @@ class modeloUsuarios
     return $response;
   }
 
-  static public function mdlBorrarUsuario($tabla, $datos)
+  static public function mdlEliminarUsuario($table, $item, $value)
   {
 
-    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idUsuario = :idUsuario");
+    $date = new DateTime('now', new DateTimeZone('America/Lima'));
+    $formattedDate = $date->format('Y-m-d H:i:s');
+    $deleteStatus = intval(11);
 
-    $stmt->bindParam(":idUsuario", $datos, PDO::PARAM_INT);
+    $text = "UPDATE $table
+      SET status = $deleteStatus,
+        deleted_at = $formattedDate
+      WHERE id = $value";
 
-    if ($stmt->execute()) {
+    $stmt = Conexion::conectar()->prepare("UPDATE $table
+      SET status = :status,
+        deleted_at = :deleted_at
+      WHERE id = :$item");
+    $stmt->bindParam(":$item", $value, PDO::PARAM_INT);
+    $stmt->bindParam(":deleted_at", $formattedDate, PDO::PARAM_STR);
+    $stmt->bindParam(":status", $deleteStatus, PDO::PARAM_INT);
+    $stmt->execute();
 
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
-
+    $response = ($stmt->rowCount() > 0) ? true : false;
     $stmt = null;
+    return $response;
   }
 }

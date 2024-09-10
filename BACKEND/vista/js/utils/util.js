@@ -25,9 +25,7 @@ export const validateForm = (elements) => {
   }
 }
 
-export const handleStatusChange = (data) => {
-  const { row, classButton, attribute } = data
-
+export const handleStatusChange = ({ row, classButton }) => {
   let status = 'Inactivo'
   let color = 'danger'
 
@@ -36,7 +34,7 @@ export const handleStatusChange = (data) => {
     color = 'success'
   }
 
-  return `<button class="btn btn-${color} btn-flat ${classButton}" ${attribute}="${row.id}">
+  return `<button class="btn btn-${color} btn-flat ${classButton}"">
     ${status}
   </button>`
 }
@@ -56,9 +54,20 @@ export const Toast = Swal.mixin({
 export const rowDataInDifferentScreen = (table, selector) => {
   let row
   if ($(selector).hasClass('child')) {
+    console.log('mobile')
     row = table.row(selector.prev())
   } else {
+    console.log('desktop')
     row = table.row(selector)
   }
   return row.data()
+}
+
+export const handleActions = ({ row, classButtonEdit, classButtonDelete }) => {
+  return `<button class="btn btn-warning btn-flat ${classButtonEdit}">
+    <i class="fa fa-pencil"></i>
+  </button>
+  <button class="btn btn-danger btn-flat ${classButtonDelete}">
+    <i class="fa fa-trash"></i>
+  </button>`
 }

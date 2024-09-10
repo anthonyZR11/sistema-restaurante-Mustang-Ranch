@@ -187,36 +187,24 @@ class controladorUsuarios
     }
   }
 
-  static public function ctrBorrarUsuario()
+  static public function ctrEliminarUsuario($item, $value)
   {
-    if (isset($_GET["idUsuario"])) {
-      $tabla = "usuario";
-      $datos = $_GET["idUsuario"];
 
-      if ($_GET["fotoUsuario"] != "") {
-        unlink($_GET["fotoUsuario"]);
-        rmdir('vista/img/usuarios/' . $_GET["nomUsuario"]);
-      }
+    $table = modeloUsuarios::TABLE;
+    $respuesta = modeloUsuarios::mdlEliminarUsuario($table, $item, $value);
 
-      $respuesta = ModeloUsuarios::mdlBorrarUsuario($tabla, $datos);
-
-      if ($respuesta == "ok") {
-        echo '<script>
-
-				swal({
-          type: "success",
-          title: "El usuario ha sido borrado correctamente",
-          showConfirmButton: true,
-          confirmButtonText: "Cerrar",
-          closeOnConfirm: false
-          }).then(function(result) {
-            if (result.value) {
-            window.location = "usuario";
-            }
-				})
-
-				</script>';
-      }
+    if ($respuesta) {
+      return [
+        "status_code" => 200,
+        "status" => "success",
+        "message" => "Usuario Eliminado correctamente"
+      ];
+    } else {
+      return [
+        "status_code" => 404,
+        "status" => "success",
+        "message" => "No se realizo la eliminacion del usuario"
+      ];
     }
   }
 }

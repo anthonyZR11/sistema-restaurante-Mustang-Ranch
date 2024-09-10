@@ -1,0 +1,13 @@
+.error {
+  color: #a00;
+  font-weight: bold;
+}
+
+.error-message {
+  font-size: 1.2rem;
+  padding: .2rem .5rem;
+}
+
+.input-error {
+  border: 2px solid #a00;
+}

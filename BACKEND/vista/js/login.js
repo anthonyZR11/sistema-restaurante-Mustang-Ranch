@@ -20,7 +20,6 @@ $(document).ready(function (e) {
           withCredentials: true // Esto asegura que las cookies se envíen y mantengan
         },
         success: function (response) {
-          console.log(response)
           const { status_code: statusCode, status, message } = response
 
           switch (parseInt(statusCode)) {

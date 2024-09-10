@@ -1,4 +1,4 @@
-import { handleStatusChange, validateForm, Toast, rowDataInDifferentScreen } from './utils/util.js'
+import { handleStatusChange, validateForm, Toast, rowDataInDifferentScreen, handleActions } from './utils/util.js'
 
 $(document).ready(function () {
   const url = 'ajax/ajax.usuario.php'
@@ -28,20 +28,18 @@ $(document).ready(function () {
         render: function (_data, _display, row) {
           return handleStatusChange({
             row,
-            classButton: 'btnCambioEstadoUsuario',
-            attribute: 'idUsuario'
+            classButton: 'btnCambioEstadoUsuario'
           })
         }
       },
       {
         data: null,
         render: function (data) {
-          return `<button class="btn btn-warning btn-flat btnEditarUsuario" idUsuario="${data.id}">
-              <i class="fa fa-pencil"></i>
-            </button>
-            <button class="btn btn-danger btn-flat btnEliminarUsuario" idUsuario="${data.id}">
-              <i class="fa fa-trash"></i>
-            </button>`
+          return handleActions({
+            row: data,
+            classButtonEdit: 'btnEditarUsuario',
+            classButtonDelete: 'btnEliminarUsuario'
+          })
         }
       }
     ]
@@ -175,10 +173,6 @@ $(document).ready(function () {
     })
   })
 
-  /* =============================================
-  REVISAR SI EL USUARIO YA ESTÁ REGISTRADO
-  ============================================= */
-
   $('#nuevoNomUsuario').change(function () {
     $('.alert').remove()
 
@@ -207,22 +201,44 @@ $(document).ready(function () {
   })
 
   $(document).on('click', '.btnEliminarUsuario', function () {
-    const idUsuario = $(this).attr('idUsuario')
-    const fotoUsuario = $(this).attr('fotoUsuario')
-    const nomUsuario = $(this).attr('nomUsuario')
+    const idUsuario = +$(this).attr('idUsuario')
 
     Swal.fire({
       title: '¿Está seguro de borrar el usuario?',
-      text: '¡Si no lo está puede cancelar la accíón!',
-      type: 'warning',
+      text: '¡Esta acción no podra revertirse',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       cancelButtonText: 'Cancelar',
       confirmButtonText: 'Si, borrar usuario!'
     }).then(function (result) {
-      if (result.value) {
-        window.location = 'index.php?ruta=usuario&idUsuario=' + idUsuario + '&nomUsuario=' + nomUsuario + '&fotoUsuario=' + fotoUsuario
+      if (result.isConfirmed) {
+        $.ajax({
+          url,
+          method: 'POST',
+          dataType: 'json',
+          data: {
+            option: 'deleteUser',
+            id: idUsuario
+          },
+          success: function (response) {
+            const { status_code: statusCode, status, message } = response
+            if (statusCode === 200) {
+              Toast.fire({
+                icon: status,
+                title: message
+              })
+
+              tableUser.ajax.reload()
+            } else {
+              Toast.fire({
+                icon: status,
+                title: message
+              })
+            }
+          }
+        })
       }
     })
   })

@@ -3,46 +3,66 @@
 require_once "../controlador/controlador.rol.php";
 require_once "../modelo/modelo.rol.php";
 
-class AjaxPlatos
+class AjaxRoles
 {
+  public $id;
+  public $name;
+  public $option;
 
-  /*=============================================
-	EDITAR CATEGORÍA
-	=============================================*/
-
-  public $idPlato;
-
-  public function ajaxEditarPlato()
+  public function __construct($data)
   {
-    $item = "idPlato";
-    $valor = $this->idPlato;
+    $this->id = $data['id'] ?? null;
+    $this->name = $data['name'] ?? null;
+    $this->option = $data['option'] ?? null;
+  }
 
-    $respuesta = controladorPlatos::ctrMostrarPlatos($item, $valor);
+  public function loadTableRoles()
+  {
+    $respuesta = ControladorRoles::ctrMostrarRoles();
     echo json_encode($respuesta);
   }
 
-  public function ajaxLoadRol()
+  public function updateRole()
   {
-    $item = null;
-    $valor = null;
+    $data = [
+      "name" => $this->name,
+      "id" => $this->id
+    ];
 
-    $respuesta = ControladorRoles::ctrMostrarRoles($item, $valor);
+    $respuesta = ControladorRoles::ctrEditarRol($data);
+    echo json_encode($respuesta);
+  }
+  public function insertRole()
+  {
+    $name = $this->name;
+
+    $respuesta = ControladorRoles::ctrCrearRol($name);
+    echo json_encode($respuesta);
+  }
+  public function deleteRole()
+  {
+    $id = $this->id;
+
+    $respuesta = ControladorRoles::ctrBorrarRol($id);
     echo json_encode($respuesta);
   }
 }
 
-/*=============================================
-EDITAR CATEGORÍA
-=============================================*/
+$ajaxRoles = (isset($_POST['option']))
+  ? new AjaxRoles($_POST)
+  : null;
 
-if (isset($_POST["idPlato"])) {
-
-  $plato = new AjaxPlatos();
-  $plato->idPlato = $_POST["idPlato"];
-  $plato->ajaxEditarPlato();
-}
-
-if (isset($_POST["option"]) && $_POST['option'] === 'loadRoles') {
-  $plato = new AjaxPlatos();
-  $plato->ajaxLoadRol();
+switch ($ajaxRoles->option) {
+  case 'loadRoles':
+    $ajaxRoles->loadTableRoles();
+    break;
+  case 'updateRole':
+    $ajaxRoles->updateRole();
+    break;
+  case 'insertRole':
+    $ajaxRoles->insertRole();
+    break;
+  case 'deleteRole':
+    $ajaxRoles->deleteRole();
+    break;
 }

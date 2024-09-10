@@ -1,4 +1,5 @@
 <?php
+ob_start();
 session_start();
 ?>
 <html>
@@ -14,6 +15,7 @@ session_start();
   <link rel="stylesheet" href="vista/bower_components/bootstrap/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="vista/dist/css/AdminLTE.css">
   <link rel="stylesheet" href="vista/css/style.system.css">
+  <link rel="stylesheet" href="vista/css/validate.css">
   <link rel="stylesheet" href="vista/bower_components/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="vista/bower_components/Ionicons/css/ionicons.min.css">
   <link rel="stylesheet" href="vista/dist/css/skins/_all-skins.min.css">
@@ -37,26 +39,26 @@ CUERPO DOCUMENTO
 ======================================-->
 
 <body class="hold-transition skin-black sidebar-mini">
-  <?php if (isset($_SESSION["sigin"]) && $_SESSION["sigin"] == "ok"): ?>
+  <?php
+  $_GET["rutaTemporal"] = null;
+  $ruta = $_GET["ruta"] ?? null;
 
+  if (isset($_SESSION["sigin"]) && $_SESSION["sigin"] == "ok"): ?>
     <div class="wrapper">
-
       <?php
       include "modulos/cabecera.php";
       include "modulos/menu.php";
 
-      $_GET["rutaTemporal"] = null;
-
-      if (isset($_GET["ruta"])) {
+      if ($ruta) {
         if (
-          $_GET["ruta"] == "principal" ||
-          $_GET["ruta"] == "usuario" ||
-          $_GET["ruta"] == "rol" ||
-          $_GET["ruta"] == "plato" ||
-          $_GET["ruta"] == "salir" ||
-          $_GET["ruta"] == "categoria-plato"
+          $ruta == "principal" ||
+          $ruta == "usuario" ||
+          $ruta == "rol" ||
+          $ruta == "plato" ||
+          $ruta == "salir" ||
+          $ruta == "categoria-plato"
         ) {
-          include "modulos/" . $_GET["ruta"] . ".php";
+          include "modulos/" . $ruta . ".php";
         } else {
           include "modulos/404.php";
         }
@@ -66,14 +68,19 @@ CUERPO DOCUMENTO
       ?>
     </div>
   <?php
+
   else:
     $_GET["rutaTemporal"] = "login";
     include "modulos/login.php";
   endif;
+  $route = Utils::getScripts($ruta, $_GET["rutaTemporal"]);
 
-  $route = Utils::getScripts($_GET["ruta"], $_GET["rutaTemporal"]);
+
+  if ($route) {
+    echo "<script type='module' src='vista/js/$route.js'></script>";
+  }
+  ob_end_flush();
   ?>
-  <script type="module" src="vista/js/<?= $route ?>.js"></script>
 </body>
 
 </html>

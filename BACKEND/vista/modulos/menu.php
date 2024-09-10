@@ -1,12 +1,11 @@
 <aside class="main-sidebar">
   <section class="sidebar">
-    <!-- Sidebar user panel -->
     <div class="user-panel">
       <div class="pull-left image">
         <img src="vista/img/img-plantilla/logo.jpg.jpg" class="img-circle" alt="User Image">
       </div>
       <div class="pull-left info">
-        <p><?php echo $_SESSION['name'] ?></p>
+        <p><?= (isset($_SESSION['name'])) ? $_SESSION['name'] : '' ?></p>
         <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
       </div>
     </div>
@@ -18,8 +17,6 @@
           <i class="fa fa-dashboard"></i> <span>Dashboard</span>
         </a>
       </li>
-
-
       <li>
         <a href="usuario">
           <i class="fa fa-user"></i> <span>Usuario</span>
@@ -33,18 +30,16 @@
       <li class="treeview">
         <a href="#">
           <i class="fa fa-files-o"></i>
-          <span>Platos</span>
+          <span>Carta de menu</span>
           <span class="pull-right-container">
             <i class="fa fa-angle-left pull-right"></i>
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a href="plato"><i class="fa fa-circle-o"></i>Crear Platos</a></li>
-          <li><a href="categoria-plato"><i class="fa fa-circle-o"></i>Categoria Platos</a></li>
+          <li><a href="categoria-plato"><i class="fa fa-circle-o"></i>Nuevo categoria</a></li>
+          <li><a href="plato"><i class="fa fa-circle-o"></i>Nuevo Plato</a></li>
         </ul>
       </li>
-
     </ul>
-
   </section>
 </aside>
