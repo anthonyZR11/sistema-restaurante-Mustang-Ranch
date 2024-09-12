@@ -11,12 +11,12 @@
   <section class="content">
     <div class="box">
       <div class="box-header with-border">
-        <button class="btn btn-primary btn-flat" data-toggle="modal" data-target="#modalAgregarCatPlato"> <i class="fa fa-plus"></i>
+        <button class="btn btn-primary btn-flat" data-toggle="modal" id="btnNewDish"> <i class="fa fa-plus"></i>
           Nuevo
         </button>
       </div>
       <div class="box-body">
-        <table class="table table-bordered table-striped dt-responsive tablas" width="100%">
+        <table class="table table-bordered table-striped dt-responsive" id="tableCategoryDish" width="100%">
           <thead>
             <tr>
               <th style="width:10px">#</th>
@@ -43,14 +43,14 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                <input type="text" class="form-control input-lg" name="nuevoCatPlato" placeholder="Ingresar nombre de categoria del plato" required>
+                <input type="text" class="form-control input-lg" name="nuevoCatPlato" id="name" placeholder="Nueva categoria" required>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
-          <button type="submit" class="btn btn-primary">Guardar Categoria Plato</button>
+          <button id="btnSave" type="button" class="btn btn-primary">Guardar Categoria</button>
         </div>
       </form>
     </div>

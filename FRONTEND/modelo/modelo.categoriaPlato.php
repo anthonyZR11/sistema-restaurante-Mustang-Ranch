@@ -9,21 +9,16 @@ class ModeloCatPlatos
 	CREAR ROL
 	=============================================*/
 
-  static public function mdlIngresarCatPlato($tabla, $datos)
+  static public function mdlIngresarCatPlato($table, $name)
   {
 
-    $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomCatPlato) VALUES (:nomCatPlato)");
-
-    $stmt->bindParam(":nomCatPlato", $datos["nomCatPlato"], PDO::PARAM_STR);
-
+    $stmt = Conexion::conectar()->prepare("INSERT INTO $table(name) VALUES (:name)");
+    $stmt->bindParam(":id", $name, PDO::PARAM_STR);
     if ($stmt->execute()) {
-
       return "ok";
     } else {
-
       return "error";
     }
-
     $stmt = null;
   }
 

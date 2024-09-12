@@ -3,33 +3,62 @@
 require_once "../controlador/controlador.categoriaPlato.php";
 require_once "../modelo/modelo.categoriaPlato.php";
 
-class AjaxCatPlatos{
+class AjaxCatPlatos
+{
+  private $id;
+  private $name;
+  public $option;
 
-	/*=============================================
-	EDITAR CATEGORÍA
-	=============================================*/	
+  public function __construct($data)
+  {
+    $this->id = $data['id'] ?? null;
+    $this->name = $data['name'] ?? null;
+    $this->option = $data['option'] ?? null;
+  }
 
-	public $idCatPlato;
-
-	public function ajaxEditarCatPlato(){
-
-		$item = "idCatPlato";
-		$valor = $this->idCatPlato;
-
-		$respuesta = ControladorCatPlatos::ctrMostrarCatPlatos($item, $valor);
-
-		echo json_encode($respuesta);
-
-	}
+  public function loadCategoryDishes()
+  {
+    $respuesta = ControladorCatPlatos::ctrMostrarCatPlatos();
+    echo json_encode($respuesta);
+  }
+  public function createCategoryDish()
+  {
+    $name = $this->name;
+    $respuesta = ControladorCatPlatos::ctrCrearCatPlato($name);
+    echo json_encode($respuesta);
+  }
+  public function updateCategoryDish()
+  {
+    $data = [
+      "id" => $this->id,
+      "name" => $this->name,
+    ];
+    var_dump($data);
+    $respuesta = ControladorCatPlatos::ctrEditarCatPlato($data);
+    echo json_encode($respuesta);
+  }
+  public function deleteCategoryDish()
+  {
+    $respuesta = ControladorCatPlatos::ctrMostrarCatPlatos();
+    echo json_encode($respuesta);
+  }
 }
 
-/*=============================================
-EDITAR CATEGORÍA
-=============================================*/	
+$ajaxCategoryDish = (isset($_POST['option']))
+  ? new AjaxCatPlatos($_POST)
+  : null;
 
-if(isset($_POST["idCatPlato"])){
-
-	$rol = new AjaxCatPlatos();
-	$rol -> idCatPlato = $_POST["idCatPlato"];
-	$rol -> ajaxEditarCatPlato();
+switch ($ajaxCategoryDish->option) {
+  case 'loadCategoryDishes':
+    $ajaxCategoryDish->loadCategoryDishes();
+    break;
+  case 'createCategoryDish':
+    $ajaxCategoryDish->createCategoryDish();
+    break;
+  case 'updateCategoryDish':
+    $ajaxCategoryDish->updateCategoryDish();
+    break;
+  case 'deleteCategoryDish':
+    $ajaxCategoryDish->deleteCategoryDish();
+    break;
 }

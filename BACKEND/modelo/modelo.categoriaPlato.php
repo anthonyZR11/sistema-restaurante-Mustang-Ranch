@@ -2,116 +2,71 @@
 
 require_once "conexion.php";
 
-class ModeloCatPlatos{
+class ModeloCatPlatos
+{
+  const TABLE = 'dish_items';
 
-	/*=============================================
-	CREAR ROL
-	=============================================*/
+  static public function mdlIngresarCatPlato($tabla, $datos)
+  {
+    $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomCatPlato) VALUES (:nomCatPlato)");
+    $stmt->bindParam(":nomCatPlato", $datos["nomCatPlato"], PDO::PARAM_STR);
+    if ($stmt->execute()) {
 
-	static public function mdlIngresarCatPlato($tabla, $datos){
+      return "ok";
+    } else {
 
-		$stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomCatPlato) VALUES (:nomCatPlato)");
+      return "error";
+    }
 
-		$stmt->bindParam(":nomCatPlato", $datos["nomCatPlato"], PDO::PARAM_STR);
+    $stmt->close();
+    $stmt = null;
+  }
 
-		if($stmt->execute()){
+  static public function mdlMostrarCatPlatos($table)
+  {
+    $stmt = Conexion::conectar()->prepare("SELECT * FROM $table");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = null;
+  }
 
-			return "ok";
-
-		}else{
-
-			return "error";
-		
-		}
-
-		$stmt->close();
-		$stmt = null;
-
-	}
-
-	/*=============================================
-	MOSTRAR ROL
-	=============================================*/
-
-	static public function mdlMostrarCatPlatos($tabla, $item, $valor){
-
-		if($item != null){
-
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE $item = :$item");
-
-			$stmt -> bindParam(":".$item, $valor, PDO::PARAM_STR);
-
-			$stmt -> execute();
-
-			return $stmt -> fetch();
-
-		}else{
-
-			$stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
-
-			$stmt -> execute();
-
-			return $stmt -> fetchAll();
-
-		}
-
-		$stmt -> close();
-
-		$stmt = null;
-
-	}
-
-	/*=============================================
+  /*=============================================
 	EDITAR CATEGORIA
 	=============================================*/
 
-	static public function mdlEditarCatPlato($tabla, $datos){
+  static public function mdlEditarCatPlato($table, $data)
+  {
 
-		$stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nomCatPlato = :nomCatPlato WHERE idCatPlato = :idCatPlato");
+    $stmt = Conexion::conectar()->prepare("UPDATE $table SET name = :name WHERE id = :id");
 
-		$stmt -> bindParam(":nomCatPlato", $datos["nomCatPlato"], PDO::PARAM_STR);
-		$stmt -> bindParam(":idCatPlato", $datos["idCatPlato"], PDO::PARAM_INT);
-		
-		if($stmt->execute()){
+    $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
+    $stmt->bindParam(":id", $data["id"], PDO::PARAM_INT);
+    $response = $stmt->execute();
+    $stmt = null;
+    return $response;
+  }
 
-			return "ok";
-
-		}else{
-
-			return "error";
-		
-		}
-
-		$stmt->close();
-		$stmt = null;
-
-	}
-
-	/*=============================================
+  /*=============================================
 	BORRAR CATEGORIA
 	=============================================*/
 
-	static public function mdlBorrarCatPlato($tabla, $datos){
+  static public function mdlBorrarCatPlato($tabla, $datos)
+  {
 
-		$stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idCatPlato = :idCatPlato");
+    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idCatPlato = :idCatPlato");
 
-		$stmt -> bindParam(":idCatPlato", $datos, PDO::PARAM_INT);
+    $stmt->bindParam(":idCatPlato", $datos, PDO::PARAM_INT);
 
-		if($stmt -> execute()){
+    if ($stmt->execute()) {
 
-			return "ok";
-		
-		}else{
+      return "ok";
+    } else {
 
-			return "error";	
+      return "error";
+    }
 
-		}
+    $stmt->close();
 
-		$stmt -> close();
-
-		$stmt = null;
-
-	}
-
+    $stmt = null;
+  }
 }
-
