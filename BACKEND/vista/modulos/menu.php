@@ -36,9 +36,15 @@
           </span>
         </a>
         <ul class="treeview-menu">
-          <li><a href="categoria-plato"><i class="fa fa-circle-o"></i>Nuevo categoria</a></li>
-          <li><a href="plato"><i class="fa fa-circle-o"></i>Nuevo Plato</a></li>
+          <li><a href="categoria-plato"><i class="fa fa-circle-o"></i>Familia de platos</a></li>
+          <li><a href="plato"><i class="fa fa-circle-o"></i>Platos</a></li>
         </ul>
+      </li>
+      <li class="treeview">
+        <a href="#">
+          <i class="fa fa-files-o"></i>
+          <span>Proximamente..</span>
+        </a>
       </li>
     </ul>
   </section>

@@ -1,6 +1,25 @@
 <?php
 ob_start();
 session_start();
+$inactive = 60;
+if (isset($_SESSION["sigin"]) && $_SESSION["sigin"] == "ok") {
+  // if (isset($_SESSION['last_activity'])) {
+  //   $session_lifetime = time() - $_SESSION['last_activity'];
+
+  //   if ($session_lifetime > $inactive) {
+  //     session_unset();
+  //     session_destroy();
+  //     setcookie(session_name(), '', time() - 3600, '/');
+  //     echo '<script>
+  //       alert("Tu sesión ha expirado. Serás redirigido al login.");
+  //       window.location = "login";
+  //     </script>';
+  //     exit();
+  //   }
+  // }
+
+  $_SESSION['last_activity'] = time();
+}
 ?>
 <html>
 
@@ -31,7 +50,9 @@ session_start();
   <script src="vista/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
   <script src="vista/bower_components/datatables.net-bs/js/dataTables.responsive.min.js"></script>
   <script src="vista/bower_components/datatables.net-bs/js/responsive.bootstrap.min.js"></Script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="vista/dist/css/sweetalert2.css">
+  <script src="vista/dist/js/sweetalert2.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 </head>
 
 <!--=====================================
@@ -43,7 +64,15 @@ CUERPO DOCUMENTO
   $_GET["rutaTemporal"] = null;
   $ruta = $_GET["ruta"] ?? null;
 
-  if (isset($_SESSION["sigin"]) && $_SESSION["sigin"] == "ok"): ?>
+  if (isset($_SESSION["sigin"]) && $_SESSION["sigin"] == "ok"):
+
+    if ($ruta === "login") {
+      header('Location: principal');
+    }
+
+
+  ?>
+
     <div class="wrapper">
       <?php
       include "modulos/cabecera.php";

@@ -6,25 +6,26 @@ class ModeloCatPlatos
 {
   const TABLE = 'dish_items';
 
-  static public function mdlIngresarCatPlato($tabla, $datos)
+  static public function mdlIngresarCatPlato($table, $name)
   {
-    $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomCatPlato) VALUES (:nomCatPlato)");
-    $stmt->bindParam(":nomCatPlato", $datos["nomCatPlato"], PDO::PARAM_STR);
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
+    try {
+      $stmt = Conexion::conectar()->prepare("INSERT INTO $table (name) VALUES (:name)");
+      $stmt->bindParam(":name", $name, PDO::PARAM_STR);
+      $response = $stmt->execute();
+      $stmt = null;
+      return $response;
+    } catch (Exception $e) {
+      if ($e->getCode() == 23000) {
+        return false;
+      } else {
+        throw new Exception("Error en la base de datos: " . $e->getMessage(), 500);
+      }
     }
-
-    $stmt->close();
-    $stmt = null;
   }
 
   static public function mdlMostrarCatPlatos($table)
   {
-    $stmt = Conexion::conectar()->prepare("SELECT * FROM $table");
+    $stmt = Conexion::conectar()->prepare("SELECT * FROM $table WHERE status = 1");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt = null;
@@ -36,12 +37,11 @@ class ModeloCatPlatos
 
   static public function mdlEditarCatPlato($table, $data)
   {
-
     $stmt = Conexion::conectar()->prepare("UPDATE $table SET name = :name WHERE id = :id");
-
     $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
     $stmt->bindParam(":id", $data["id"], PDO::PARAM_INT);
-    $response = $stmt->execute();
+    $stmt->execute();
+    $response = $stmt->rowCount() > 0;
     $stmt = null;
     return $response;
   }
@@ -50,23 +50,14 @@ class ModeloCatPlatos
 	BORRAR CATEGORIA
 	=============================================*/
 
-  static public function mdlBorrarCatPlato($tabla, $datos)
+  static public function mdlBorrarCatPlato($table, $id)
   {
 
-    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idCatPlato = :idCatPlato");
-
-    $stmt->bindParam(":idCatPlato", $datos, PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
-
+    $stmt = Conexion::conectar()->prepare("UPDATE $table SET status = 0 WHERE id = :id");
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $response = $stmt->rowCount() > 0;
     $stmt = null;
+    return $response;
   }
 }

@@ -5,6 +5,7 @@ $categoria = ControladorCatPlatos::ctrMostrarCatPlatos($item, $valor);
 
 $item = "dish_item_id";
 $valor = $categoria['id'];
+
 $platos = controladorPlatos::ctrMostrarPlatos($item, $valor);
 ?>
 
@@ -17,7 +18,7 @@ $platos = controladorPlatos::ctrMostrarPlatos($item, $valor);
         <div class="col-12 col-md-4">
           <div class="menu-item">
             <div class="img-holder">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbR3IATt46jQws-6HXvDqSMFoGX9zmUagJGQ&s"
+              <img src="<?= $value["url_image"] ?>"
                 alt="imagen">
               <!-- <img src="../BACKEND/ $value["image"] ?>" alt="imagen"> -->
             </div>
@@ -27,6 +28,10 @@ $platos = controladorPlatos::ctrMostrarPlatos($item, $valor);
                 <span class="price-base">S/. <?= $value["price_base"] ?></span>
                 <span class="price-discount">S/. <?= $value["price_discount"] ?></span>
               </div>
+              <!-- <div id="content-checkout">
+                <input type="number" value="1" id="quantity">
+                <button id="btnBuy">Pedir</button>
+              </div> -->
             </div>
           </div>
         </div>

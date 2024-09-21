@@ -1,34 +1,45 @@
-/* =============================================
-Data Table
-============================================= */
+document.addEventListener('DOMContentLoaded', e => {
+  const lastDish = document.getElementById('lastDish')
+  const topDish = document.getElementById('topDish')
+  const url = 'ajax/ajax.plato.php'
 
-$('.tablas').DataTable({
-
-  language: {
-
-    sProcessing: 'Procesando...',
-    sLengthMenu: 'Mostrar _MENU_ registros',
-    sZeroRecords: 'No se encontraron resultados',
-    sEmptyTable: 'Ningún dato disponible en esta tabla',
-    sInfo: 'Mostrando registros del _START_ al _END_ de un total de _TOTAL_',
-    sInfoEmpty: 'Mostrando registros del 0 al 0 de un total de 0',
-    sInfoFiltered: '(filtrado de un total de _MAX_ registros)',
-    sInfoPostFix: '',
-    sSearch: 'Buscar:',
-    sUrl: '',
-    sInfoThousands: ',',
-    sLoadingRecords: 'Cargando...',
-    oPaginate: {
-      sFirst: 'Primero',
-      sLast: 'Último',
-      sNext: 'Siguiente',
-      sPrevious: 'Anterior'
-    },
-    oAria: {
-      sSortAscending: ': Activar para ordenar la columna de manera ascendente',
-      sSortDescending: ': Activar para ordenar la columna de manera descendente'
-    }
-
+  function loadDishesPersonalized (option, selector, text) {
+    ajaxData(option, selector, text)
   }
 
+  function ajaxData (option, selector, text) {
+    console.log(selector)
+    $.ajax({
+      url,
+      method: 'POST',
+      dataType: 'json',
+      data: {
+        option
+      },
+      success: function (dishes) {
+        if (dishes.lenght === 0) {
+          return
+        }
+
+        selector.innerHTML = ''
+
+        dishes.forEach((dish) => {
+          const li = document.createElement('li')
+          li.className = 'list-group-item d-flex justify-content-between align-items-center'
+          const span = document.createElement('span')
+          span.className = 'badge badge-primary badge-pill'
+
+          li.textContent = dish.name
+          span.textContent = text
+
+          li.appendChild(span)
+          selector.appendChild(li)
+        })
+      }
+
+    })
+  }
+
+  loadDishesPersonalized('loadLastDish', lastDish, 'Reciente')
+  loadDishesPersonalized('loadTopDish', topDish, 'Lo mejor')
 })

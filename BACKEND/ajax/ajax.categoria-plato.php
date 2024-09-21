@@ -33,13 +33,13 @@ class AjaxCatPlatos
       "id" => $this->id,
       "name" => $this->name,
     ];
-    var_dump($data);
     $respuesta = ControladorCatPlatos::ctrEditarCatPlato($data);
     echo json_encode($respuesta);
   }
   public function deleteCategoryDish()
   {
-    $respuesta = ControladorCatPlatos::ctrMostrarCatPlatos();
+    $id = $this->id;
+    $respuesta = ControladorCatPlatos::ctrBorrarCatPlato($id);
     echo json_encode($respuesta);
   }
 }

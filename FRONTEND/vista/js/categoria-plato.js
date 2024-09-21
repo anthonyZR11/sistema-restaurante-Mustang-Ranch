@@ -1,6 +1,3 @@
-/*=============================================
-EDITAR CATEGORIA
-=============================================*/
 $(".tablas").on("click", ".btnEditarCatPlato", function(){
 
 
@@ -16,10 +13,10 @@ $(".tablas").on("click", ".btnEditarCatPlato", function(){
 		method: "POST",
       	data: datos,
       	cache: false,
-     	contentType: false,
+     	contentType: false, 
      	processData: false,
      	dataType:"json",
-     	success: function(respuesta){
+     	success: function(respuesta){ 
 		console.log(respuesta);
      		$("#editarCatPlato").val(respuesta["nomCatPlato"]);
      		$("#idCatPlato").val(respuesta["idCatPlato"]);

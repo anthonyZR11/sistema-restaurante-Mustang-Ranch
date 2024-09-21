@@ -7,10 +7,23 @@ class ControladorCatPlatos
   {
     if (preg_match('/^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ ]+$/', $name)) {
 
-      $table = ModeloRoles::TABLE;
-      $name = ["name" => strtoupper($name)];
+      $table = ModeloCatPlatos::TABLE;
+      $name = strtoupper($name);
       $respuesta = ModeloCatPlatos::mdlIngresarCatPlato($table, $name);
-      return $respuesta;
+
+      if ($respuesta) {
+        return [
+          "status_code" => "200",
+          "status" => "success",
+          "message" => "Categoria agregada exitosamente"
+        ];
+      } else {
+        return [
+          "status_code" => "409",
+          "status" => "error",
+          "message" => "La categoria ya existe"
+        ];
+      }
     }
   }
 
@@ -34,28 +47,40 @@ class ControladorCatPlatos
       ];
 
       $respuesta = ModeloCatPlatos::mdlEditarCatPlato($table, $data);
-      return $respuesta;
+
+      if ($respuesta) {
+        return [
+          "status_code" => "200",
+          "status" => "success",
+          "message" => "Categoria actualizada exitosamente"
+        ];
+      } else {
+        return [
+          "status_code" => "409",
+          "status" => "warning",
+          "message" => "No se realizaron cambios"
+        ];
+      }
     }
   }
 
-  static public function ctrBorrarCatPlato()
+  static public function ctrBorrarCatPlato($id)
   {
+    $table = ModeloCatPlatos::TABLE;
+    $respuesta = ModeloCatPlatos::mdlBorrarCatPlato($table, $id);
 
-    if (isset($_GET["idCatPlato"])) {
-
-      $respuesta = ModeloCatPlatos::mdlMostrarCatPlatos("plato", "idCatPlato", $_GET["idCatPlato"]);
-
-      if (!$respuesta) {
-
-        $tabla = "categoria_plato";
-        $datos = $_GET["idCatPlato"];
-
-        $respuesta = ModeloCatPlatos::mdlBorrarCatPlato($tabla, $datos);
-
-        if ($respuesta == "ok") {
-          $a = '';
-        }
-      }
+    if ($respuesta) {
+      return [
+        "status_code" => "200",
+        "status" => "success",
+        "message" => "Categoria eliminada exitosamente"
+      ];
+    } else {
+      return [
+        "status_code" => "409",
+        "status" => "warning",
+        "message" => "No se realizaron cambios"
+      ];
     }
   }
 }

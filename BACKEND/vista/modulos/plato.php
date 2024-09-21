@@ -5,31 +5,28 @@
     </h1>
     <ol class="breadcrumb">
       <li><a href="principal"><i class="fa fa-dashboard"></i> Inicio</a></li>
-      <li class="active"> <?php echo $_GET['ruta'] ?></li>
+      <li class="active"> <?= $_GET['ruta'] ?></li>
     </ol>
   </section>
   <section class="content">
     <div class="box">
       <div class="box-header with-border">
-        <button class="btn btn-primary btn-flat" data-toggle="modal" data-target="#modalAgregarPlato"> <i class="fa fa-plus"></i>
+        <button id="btnNewDish" class="btn btn-primary btn-flat" data-toggle="modal"> <i class="fa fa-plus"></i>
           Nuevo
         </button>
       </div>
       <div class="box-body">
-        <table class="table table-bordered table-striped dt-responsive tablas" width="100%">
+        <table id="tableDish" class="table table-bordered table-striped dt-responsive tablas" width="100%">
           <thead>
             <tr>
               <th style="width:10px">#</th>
               <th>Nombre Plato</th>
               <th>Categoria</th>
-              <th style="width: 40px;">Foto</th>
               <th>Descripcion</th>
-              <th>Precio</th>
+              <th style="width: 40px;">Foto</th>
+              <th>Precio base</th>
+              <th>Precio descuento</th>
               <th style="width: 170px;">Acciones</th>
-              <?php //  if($_SESSION["rol"] == "ADMINISTRADOR" || $_SESSION["rol"] == "EDITOR"){ 
-              echo '';
-              // }
-              ?>
             </tr>
           </thead>
         </table>
@@ -50,40 +47,47 @@
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                <input type="text" class="form-control input-lg" name="nuevoNomPlato" placeholder="Ingresar nombre del plato..." required>
+                <input id="name" type="text" class="form-control input-lg" name="nuevoNomPlato" placeholder="Ingresar nombre del plato..." required>
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-users"></i></span>
-                <select class="form-control input-lg" name="nuevoCatPlato">
-                  <option value="">Selecionar Rol</option>
+                <select class="form-control input-lg" id="dishItems">
+                  <option value="" selected disabled>Selecionar Rol</option>
                 </select>
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                <input type="text" class="form-control input-lg" name="nuevoDescPlato" placeholder="Ingresar descripcion..." required>
+                <input type="text" class="form-control input-lg" name="nuevoDescPlato" id="description" placeholder="Ingresar descripcion..." required>
               </div>
             </div>
             <div class="form-group">
               <div class="input-group">
                 <span class="input-group-addon"><i class="fa fa-th"></i></span>
-                <input type="number" class="form-control input-lg" step="any" name="nuevoPrecio" placeholder="0.00" required>
+                <input type="url" class="form-control input-lg" name="urlPhoto" id="urlPhoto" placeholder="url de la foto" required>
               </div>
             </div>
             <div class="form-group">
-              <div class="panel">SUBIR FOTO</div>
-              <input type="file" class="nuevaFoto" name="fotito">
-              <p class="help-block">Peso máximo de la foto 2MB</p>
-              <img src="vista/img/img-plantilla/plato.png" class="img-thumbnail previsualizarEditar" width="100px">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                <input type="number" class="form-control input-lg" step="any" name="nuevoPrecio" id="priceBase" placeholder="0.00" required>
+              </div>
             </div>
+            <div class="form-group">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-th"></i></span>
+                <input type="number" class="form-control input-lg" step="any" name="nuevoPrecio" id="priceDiscount" placeholder="0.00" required>
+              </div>
+            </div>
+            <input type="password" hidden readonly name="userId" id="userId" value="<?= $_SESSION['user_id'] ?>">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Salir</button>
-          <button type="submit" class="btn btn-primary">Guardar Plato</button>
+          <button id="btnSaveDish" type="button" class="btn btn-primary">Guardar Plato</button>
         </div>
       </form>
     </div>

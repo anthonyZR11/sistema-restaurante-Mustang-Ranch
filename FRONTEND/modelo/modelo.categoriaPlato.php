@@ -35,7 +35,7 @@ class ModeloCatPlatos
       $stmt->execute();
       return $stmt->fetch(PDO::FETCH_ASSOC);
     } else {
-      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla");
+      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla WHERE status = 1");
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -68,21 +68,13 @@ class ModeloCatPlatos
 	BORRAR CATEGORIA
 	=============================================*/
 
-  static public function mdlBorrarCatPlato($tabla, $datos)
+  static public function mdlBorrarCatPlato($table, $id)
   {
 
-    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idCatPlato = :idCatPlato");
-
-    $stmt->bindParam(":idCatPlato", $datos, PDO::PARAM_INT);
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
+    $stmt = Conexion::conectar()->prepare("UPDATE $table SET status = 0 WHERE id = :id");
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
+    $response = $stmt->execute();
     $stmt = null;
+    return $response;
   }
 }

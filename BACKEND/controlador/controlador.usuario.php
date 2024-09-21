@@ -25,7 +25,7 @@ class controladorUsuarios
 
               session_start();
               $_SESSION["sigin"] = "ok";
-              $_SESSION["id"] = $respuesta["id"];
+              $_SESSION["user_id"] = $respuesta["id"];
               $_SESSION["name"] = $respuesta["name"];
               $_SESSION["email"] = $respuesta["email"];
               $_SESSION["role_id"] = $respuesta["role_id"];
@@ -202,7 +202,7 @@ class controladorUsuarios
     } else {
       return [
         "status_code" => 404,
-        "status" => "success",
+        "status" => "warrning",
         "message" => "No se realizo la eliminacion del usuario"
       ];
     }

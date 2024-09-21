@@ -10,10 +10,23 @@ class controladorPlatos
     return $respuesta;
   }
 
-  static public function ctrMostrarPlatos2($item, $valor)
+  static public function ctrCrearCatPlato($data)
   {
-    $tabla = 'dishes';
-    $respuesta = modeloPlatos::mdlMostrarPlatos2($tabla, $item, $valor);
+    $table = modeloPlatos::TABLE;
+    $respuesta = modeloPlatos::mdlIngresarPlato($table, $data);
+    return $respuesta;
+  }
+
+  static public function ctrEditarPlato($data)
+  {
+    $table = modeloPlatos::TABLE;
+    $respuesta = modeloPlatos::mdlEditarPlato($table, $data);
+    return $respuesta;
+  }
+  static public function ctrBorrarCatPlato($id)
+  {
+    $table = modeloPlatos::TABLE;
+    $respuesta = modeloPlatos::mdlBorrarPlato($table, $id);
     return $respuesta;
   }
 }

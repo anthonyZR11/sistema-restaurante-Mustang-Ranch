@@ -9,7 +9,7 @@ class ModeloRoles
   static public function mdlCrearRol($table, $name)
   {
     try {
-      $stmt = Conexion::conectar()->prepare("INSERT INTO $table (name) VALUES (:name)");
+      $stmt = conexion::conectar()->prepare("INSERT INTO $table (name) VALUES (:name)");
       $stmt->bindParam(":name", $name, PDO::PARAM_STR);
 
       $response = $stmt->execute();
@@ -26,7 +26,7 @@ class ModeloRoles
 
   static public function mdlMostrarRoles($table)
   {
-    $stmt = Conexion::conectar()->prepare("SELECT * FROM $table WHERE status = 1 ORDER BY id DESC");
+    $stmt = conexion::conectar()->prepare("SELECT * FROM $table WHERE status = 1 ORDER BY id DESC");
     $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
@@ -37,15 +37,15 @@ class ModeloRoles
 
   static public function mdlEditarRol($table, $data)
   {
-    $stmt = Conexion::conectar()->prepare("UPDATE $table SET name = :name WHERE id = :id");
+    $stmt = conexion::conectar()->prepare("UPDATE $table SET name = :name WHERE id = :id");
 
     $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
     $stmt->bindParam(":id", $data["id"], PDO::PARAM_INT);
     $stmt->execute();
 
-    $response = $stmt->rowCount() > 0;
+    $lastInsertId = conexion::conectar()->lastInsertId();
     $stmt = null;
-    return $response;
+    return ($lastInsertId) ? true : false;
   }
 
   /*=============================================

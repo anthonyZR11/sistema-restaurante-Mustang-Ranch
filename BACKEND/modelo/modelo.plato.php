@@ -2,105 +2,137 @@
 require_once 'conexion.php';
 class modeloPlatos
 {
-  /*=============================================
-				MOSTRAR PLATO
-		=============================================*/
-  static public function mdlMostrarPlatos($tabla, $item, $valor)
-  {
+  const TABLE = 'dishes';
 
-    if ($item != null) {
-      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla as p INNER JOIN dish_items as cp ON p.dish_item_id = cp.id WHERE  $item = :$item");
-      $stmt->bindParam(":" . $item, $valor, PDO::PARAM_STR);
-      $stmt->execute();
-      return $stmt->fetch();
-    } else {
-      $stmt = Conexion::conectar()->prepare("SELECT * FROM $tabla as p INNER JOIN dish_items as cp ON p.dish_item_id = cp.id");
-      $stmt->execute();
-      return $stmt->fetchAll();
-    }
+  static public function mdlMostrarPlatos($table)
+  {
+    $stmt = Conexion::conectar()->prepare("SELECT
+        d.id,
+        d.name,
+        d.dish_item_id,
+        d.url_image,
+        d.description,
+        d.price_base,
+        d.price_discount,
+        di.name AS itemName
+      FROM $table AS d
+      INNER JOIN dish_items AS di
+      ON d.dish_item_id = di.id
+      WHERE d.status = 1");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /*=============================================
 		REGISTRO DE USUARIO
 		=============================================*/
 
-  static public function mdlIngresarPlato($tabla, $datos)
+  static public function mdlIngresarPlato($table, $data)
   {
+    $conn = conexion::conectar();
+    try {
+      $stmt = $conn->prepare(
+        "INSERT INTO $table
+          (name,
+          dish_item_id,
+          url_image,
+          description,
+          price_base,
+          price_discount,
+          user_id) 
+        VALUES 
+          (:name,
+          :dishItem,
+          :urlPhoto,
+          :description,
+          :priceBase,
+          :priceDiscount,
+          :userId)"
+      );
 
-    $stmt = Conexion::conectar()->prepare("INSERT INTO $tabla(nomPlato, idCatPlato, fotoPlato, descPlato, precPlatoBase) VALUES (:plato, :categoria, :foto, :descripcion, :precio)");
+      $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
+      $stmt->bindParam(":dishItem", $data["dishItem"], PDO::PARAM_INT);
+      $stmt->bindParam(":urlPhoto", $data["urlPhoto"], PDO::PARAM_STR);
+      $stmt->bindParam(":description", $data["description"], PDO::PARAM_STR);
+      $stmt->bindParam(":priceBase", $data["priceBase"], PDO::PARAM_STR);
+      $stmt->bindParam(":priceDiscount", $data["priceDiscount"], PDO::PARAM_STR);
+      $stmt->bindParam(":userId", $data["userId"], PDO::PARAM_INT);
+      $stmt->execute();
 
-    $stmt->bindParam(":plato", $datos["plato"], PDO::PARAM_STR);
-    $stmt->bindParam(":precio", $datos["precio"], PDO::PARAM_STR);
-    $stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-    $stmt->bindParam(":categoria", $datos["categoria"], PDO::PARAM_INT);
-    $stmt->bindParam(":foto", $datos["foto"], PDO::PARAM_STR);
+      $lastInsertId = $conn->lastInsertId();
+      $stmt = null;
 
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
+      return ($lastInsertId) ? true : false;
+    } catch (Exception $e) {
+      if ($e->getCode() == 23000) {
+        return false;
+      } else {
+        throw new Exception("Error en la base de datos: " . $e->getMessage(), 500);
+      }
     }
-
-    $stmt->close();
-
-    $stmt = null;
   }
 
-  /*=============================================
-		EDITAR USUARIO
-		=============================================*/
-
-  static public function mdlEditarPlato($tabla, $datos)
+  static public function mdlEditarPlato($table, $data)
   {
+    $stmt = Conexion::conectar()->prepare("UPDATE $table 
+    SET name = :name,
+      dish_item_id = :dishItem,
+      url_image = :urlPhoto,
+      description = :description,
+      price_base = :priceBase,
+      price_discount = :priceDiscount,
+      user_id = :userId
+    WHERE id = :id");
 
-    $stmt = Conexion::conectar()->prepare("UPDATE $tabla SET nomPlato = :plato, idCatPlato = :cat, fotoPlato = :foto, descPlato = :descripcion, precPlatoBase = :precio WHERE idPlato = :id");
+    $stmt->bindParam(":id", $data["id"], PDO::PARAM_STR);
+    $stmt->bindParam(":name", $data["name"], PDO::PARAM_STR);
+    $stmt->bindParam(":dishItem", $data["dishItem"], PDO::PARAM_INT);
+    $stmt->bindParam(":urlPhoto", $data["urlPhoto"], PDO::PARAM_STR);
+    $stmt->bindParam(":description", $data["description"], PDO::PARAM_STR);
+    $stmt->bindParam(":priceBase", $data["priceBase"], PDO::PARAM_STR);
+    $stmt->bindParam(":priceDiscount", $data["priceDiscount"], PDO::PARAM_STR);
+    $stmt->bindParam(":priceDiscount", $data["priceDiscount"], PDO::PARAM_STR);
+    $stmt->bindParam(":userId", $data["userId"], PDO::PARAM_INT);
+    $stmt->execute();
 
-    $stmt->bindParam(":plato", $datos["plato"], PDO::PARAM_STR);
-    $stmt->bindParam(":descripcion", $datos["descripcion"], PDO::PARAM_STR);
-    $stmt->bindParam(":foto", $datos["foto"], PDO::PARAM_STR);
-    $stmt->bindParam(":cat", $datos["cat"], PDO::PARAM_INT);
-    $stmt->bindParam(":precio", $datos["precio"], PDO::PARAM_STR);
-    $stmt->bindParam(":id", $datos["id"], PDO::PARAM_INT);
-
-
-
-    if ($stmt->execute()) {
-
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
+    $response = $stmt->rowCount() > 0;
 
     $stmt = null;
+    return $response;
   }
 
-  /*=============================================
-		BORRAR USUARIO
-		=============================================*/
-
-  static public function mdlBorrarPlato($tabla, $datos)
+  static public function mdlBorrarPlato($table, $id)
   {
 
-    $stmt = Conexion::conectar()->prepare("DELETE FROM $tabla WHERE idPlato = :idPlato");
+    $stmt = Conexion::conectar()->prepare("UPDATE $table
+    SET status = 0
+    WHERE id = :id");
 
-    $stmt->bindParam(":idPlato", $datos, PDO::PARAM_INT);
+    $stmt->bindParam(":id", $id, PDO::PARAM_INT);
 
-    if ($stmt->execute()) {
+    $stmt->execute();
 
-      return "ok";
-    } else {
-
-      return "error";
-    }
-
-    $stmt->close();
-
+    $response = $stmt->rowCount() > 0;
     $stmt = null;
+    return $response;
+  }
+
+  static public function mdlLoadLastDish($table)
+  {
+
+    $stmt = Conexion::conectar()->prepare("SELECT id, name FROM $table ORDER BY created_at DESC LIMIT 10");
+    $stmt->execute();
+    $response =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = null;
+    return $response;
+  }
+  static public function mldLoadTopDish($table)
+  {
+
+    $stmt = Conexion::conectar()->prepare("SELECT id, name FROM $table WHERE flag = 1 LIMIT 10");
+    $stmt->execute();
+    $response =  $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = null;
+    return $response;
   }
 }

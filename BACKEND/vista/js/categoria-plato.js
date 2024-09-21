@@ -1,5 +1,5 @@
+import { handleActions, rowDataInDifferentScreen, Toast } from './utils/util.js'
 import { validateField } from './utils/validate.js'
-import { handleActions, rowDataInDifferentScreen } from './utils/util.js'
 
 $(document).ready(function (e) {
   const name = $('#name')
@@ -36,6 +36,9 @@ $(document).ready(function (e) {
   $('#btnNewDish').on('click', function () {
     modalDish.modal('show')
     name.val('')
+
+    btnSaveDish.removeAttr('data-id')
+    btnSaveDish.removeAttr('data-action')
   })
 
   btnSaveDish.on('click', function () {
@@ -57,9 +60,9 @@ $(document).ready(function (e) {
         dataType: 'json',
         success: function (respuesta) {
           const { status_code: statusCode, status, message } = respuesta
-
-          if (statusCode === 200) {
-            $('#modalAgregarRol').modal('hide')
+          console.log(statusCode, status, message)
+          if (+statusCode === 200) {
+            $('#modalAgregarCatPlato').modal('hide')
             tableCategoryDish.ajax.reload()
           }
 
@@ -82,38 +85,45 @@ $(document).ready(function (e) {
     name.val(data.name)
     btnSaveDish.attr('data-id', id)
     btnSaveDish.attr('data-action', 'updateCategoryDish')
-
-    $.ajax({
-      url,
-      method: 'POST',
-      data: {
-        option: 'updateCategoryDish',
-        id,
-        name: name.val()
-      },
-      dataType: 'json',
-      success: function (respuesta) {
-        console.log(respuesta)
-      }
-
-    })
   })
 
-  $('.btnEliminarCategoryDish').on('click', function () {
-    const idCatPlato = $(this).attr('idCatPlato')
+  $(document).on('click', '.btnEliminarCategoryDish', function () {
+    const tr = $(this).closest('tr')
+    const data = rowDataInDifferentScreen(tableCategoryDish, tr)
+    const id = data.id
 
     Swal.fire({
-      title: '¿Está seguro de borrar?',
-      text: '¡Elimnar esta categoria de plato!',
-      type: 'warning',
+      title: '¿Está seguro?',
+      text: '¡Esta acción no se podra revertir',
+      icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       cancelButtonText: 'Cancelar',
-      confirmButtonText: 'Si, borrar categoria de plato!'
+      confirmButtonText: 'Si, eliminar'
     }).then(function (result) {
-      if (result.value) {
-        window.location = 'index.php?ruta=categoria-plato&idCatPlato=' + idCatPlato
+      console.log(result)
+      if (result.isConfirmed) {
+        $.ajax({
+          url,
+          method: 'POST',
+          dataType: 'json',
+          data: {
+            id,
+            option: 'deleteCategoryDish'
+          },
+          success: function (response) {
+            const { status_code: statusCode, status, message } = response
+
+            if (+statusCode === 200) {
+              tableCategoryDish.ajax.reload()
+            }
+            Toast.fire({
+              icon: status,
+              text: message
+            })
+          }
+        })
       }
     })
   })
