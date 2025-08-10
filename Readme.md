@@ -26,14 +26,12 @@ Sistema completo para la gestión del restaurante Mustang Ranch, que incluye:
 ```
 
 ### Tecnologías Utilizadas
-https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white
-https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white
-https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
-https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white
-https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white
-https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white
-https://img.shields.io/badge/AdminLTE-3.2.0-367fa9?style=for-the-badge
-
+![HTML](https://img.shields.io/badge/HTML5-white?style=for-the-badge&logo=html5&logoColor=white&color=orange)
+![CSS](https://img.shields.io/badge/CSS3-white?style=for-the-badge&logo=css3&logoColor=white&color=blue)
+![JAVASCRIPT](https://img.shields.io/badge/JAVASCRIPT-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![PHP](https://img.shields.io/badge/PHP-F7DF1E?style=for-the-badge&logo=php&logoColor=white&color=%23777BB4)
+![MYSQL](https://img.shields.io/badge/MYSQL-F7DF1E?style=for-the-badge&logo=mysql&logoColor=white&color=%234479A1)
+![BOOTSTRAP](https://img.shields.io/badge/BOOTSTRAP-F7DF1E?style=for-the-badge&logo=bootstrap&logoColor=white&color=%237952B3)
 
 
 ### 🌐 Demo en Vivo 
