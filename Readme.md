@@ -24,6 +24,27 @@ Sistema completo para la gestión del restaurante Mustang Ranch, que incluye:
 ├── Control de Roles  
 └── Reportes y estadísticas 
 ```
+### 🛠️ **Proceso de Instalación**
+
+##### 📥 **Clonar Repositorio**
+```bash
+git clone https://github.com/anthonyZR11/sistema-restaurante-Mustang-Ranch.git
+cd sistema-restaurante-Mustang-Ranch
+```
+
+##### 🎻 **Instalar dependencias con composer**
+```bash
+composer install
+```
+
+##### ⚙️ **Configurar variables de entorno**
+```bash
+DB_HOST=8.8.8.8
+DB_PORT=3306
+DB_NAME=base-de-datos-nombre
+DB_USER=usuario-base-de-datos
+DB_PASSWORD=contraseña-base-de-datos
+```
 
 ### Tecnologías Utilizadas
 ![HTML](https://img.shields.io/badge/HTML5-white?style=for-the-badge&logo=html5&logoColor=white&color=orange)
